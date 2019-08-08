@@ -76,6 +76,7 @@
         <h4>执行日志</h4>
         <hr>
         <input type="hidden" name="logfile" id="logfile">
+        <input type="hidden" name="line" id="line">
         <div class="command_log" id="command_log" name="command_log">
 
         </div>
@@ -84,6 +85,13 @@
 </div>
 
 <script>
+    function sleep(delay) {
+        var start = (new Date()).getTime();
+        while ((new Date()).getTime() - start < delay) {
+            continue;
+        }
+    }
+
     function execute_command() {
         var group = $("#group").val();
         var host = $("#host").val();
@@ -112,20 +120,59 @@
 
                     var obj=JSON.parse(result);
                     // console.log(obj['logfile']);
-                    // document.getElementById('logfile').value=obj['logfile'];
-                    $.get('/ansible_command/get_log',{
-                        'logfile': obj['logfile'],
-                    }, function (data, status) {
-                        console.log(data, status);
-                        document.getElementById('command_log').append(data);
-                    })
+                    document.getElementById('logfile').value=obj['logfile'];
+
                 });
         }
     }
 
-    function get_log() {
+    //设定定时器，使有日志之后定时读取日志到页面
+    setInterval(  function get_log()
+    {
+        console.log('2111111111111111111');
+        var d=new Date();
+        var t=d.toLocaleTimeString();
+        document.getElementById("command_log").innerHTML=t;
+        var logfile = document.getElementById('logfile').value;
+        var line = document.getElementById('line').value;
+        //判断是否产生日志文件
+        if (logfile&&line){
+            $.get('/ansible_command/get_log',{
+                'logfile': logfile,
+                'line': line
+            }, function (data, status) {
+                    var data=JSON.parse(data);
+                    console.log(data);
+                var div = document.getElementById('command_log');
+                div.insertAdjacentHTML('afterend', data['log']);
+                document.getElementById('line').value=data['line'];
+                window.scrollTo(0, document.documentElement.clientHeight);
 
-    }
+            }
+            )}else if(logfile&&(!line)){
+            $.get('/ansible_command/get_log',{
+                'logfile': logfile,
+                'line': 0
+            }, function (data, status) {
+                var data=JSON.parse(data);
+                console.log(data);
+                // var p = document.createElement('p');
+                var div = document.getElementById('command_log');
+                div.insertAdjacentHTML('afterend', data['log']);
+                document.getElementById('line').value=data['line'];
+                window.scrollTo(0, document.documentElement.clientHeight);
+
+            })
+        }else {
+
+        }
+        console.log(logfile)
+
+    }, 5000)
+
+
+
+
 </script>
 <script src="/static/ansible/command.js"></script>
 {/block}
