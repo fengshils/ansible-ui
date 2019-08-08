@@ -2,8 +2,9 @@
 ```
 #首先需安装ansible
 #CentOS 启用epel源之后
-sed -i 's/host_key_checking = False/#host_key_checking = False/' /etc/ansible/ansible.cfg
 yum -y installl ansible
+sed -i 's/host_key_checking = False/#host_key_checking = False/' /etc/ansible/ansible.cfg
+
 启动： cd app/tools&& php server.php&
 /opt/lampp/xampp start
 ```
