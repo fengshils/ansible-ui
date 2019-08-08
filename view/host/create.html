@@ -1,0 +1,78 @@
+{extend name='base'/}
+
+{block name='content'}
+<style>
+    ul {
+        list-style-type:none;
+    }
+    #livesearch li{
+        list-style-type:none;
+        height:35px;
+        width:100%;
+        line-height:35px;
+        border-bottom:#DFDFDF 1px solid;
+        color:#939393;
+        display:block;
+    }
+    #livesearch li:hover {
+        color:#ff5c57;
+    }
+
+</style>
+
+<h1>添加主机</h1>
+<hr>
+<div class="panel-heading">
+    
+</div>
+<div class="panel-body">
+    <div class="col-md-8 col-md-offset-2">
+            <form action="{:url('index/host/save')}" method="POST">
+
+                    <div class="form-group">
+                            <label>主机名称</label>
+                            <input class="form-control" name='name' id='name' required>
+                            <p class="help-block"></p>
+
+                        <input type="hidden" name="__token__" value="{:token()}" />
+                        </div>
+                        <div class="form-group">
+                            <label>IP</label>
+                            <input class="form-control" name='ip' id='ip' required>
+                        </div>
+                        <div class="form-group">
+                            <label>用户</label>
+                            <input class="form-control" name='user' id='user' required>
+						</div>
+						<div class="form-group">
+							<label>密码</label>
+							<input type="password" class="form-control" name='password' id='password' placeholder="密码与密钥必须输入一个">
+						</div>
+
+						<div class="form-group">
+							<label>密钥</label>
+							<input class="form-control" name='key' id='key'>
+						</div>
+
+						<div class="form-group">
+							<label>主机组</label>
+							<input class="form-control" name='g_id' id='g_id' required  onkeyup="showResult(this.value)">
+							<ul id='livesearch'>
+
+							</ul>
+						</div>			
+
+                        <div class="text-center">
+                                <button class='btn btn-default' type="reset">重置</button>
+                                <button class='btn btn-primary' type="submit">提交</button>
+                        </div>
+         
+    </form>
+    </div>
+</div>
+
+{/block}
+
+{block name='script'}
+<script src="/static/index/host/host.js"></script>
+{/block}
