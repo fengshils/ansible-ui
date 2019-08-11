@@ -9,8 +9,8 @@ sed -i 's/host_key_checking = False/#host_key_checking = False/' /etc/ansible/an
 /opt/lampp/xampp start
 ```
 ansible 命令执行 完成
-playbook 管理器 未完成
-playbook 执行  未完成
+playbook 管理器 完成
+playbook 执行  完成
 
 cesgu
 php think make:validate HostGroup  创建验证器
