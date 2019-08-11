@@ -15,5 +15,9 @@ Route::get('think', function () {
 });
 
 Route::get('hello/:name', 'index/hello');
+Route::rule('doLogin', 'LoginController/doLogin', 'POST');
 Route::rule('host_group/save', 'HostGroup/save', 'POST');
+Route::rule('login', 'LoginController/login', 'GET');
+
+Route::rule('logout', 'LoginController/logout', 'GET');
 //Route::get('host_group/search', 'host_group/search');

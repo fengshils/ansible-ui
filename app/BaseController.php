@@ -14,6 +14,7 @@ namespace app;
 
 use think\App;
 use think\exception\ValidateException;
+use think\facade\Session;
 use think\Validate;
 
 /**

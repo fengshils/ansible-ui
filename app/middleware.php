@@ -1,5 +1,7 @@
 <?php
 
+use app\middleware\CheckLogin;
+
 return [
     // 全局请求缓存
     // \think\middleware\CheckRequestCache::class,
@@ -9,4 +11,5 @@ return [
      \think\middleware\SessionInit::class,
     // 页面Trace调试
     // \think\middleware\TraceDebug::class,
+
 ];

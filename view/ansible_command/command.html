@@ -3,21 +3,27 @@
 {block name='content'}
 <style>
     ul {
-        list-style-type:none;
-    }
-    #livesearch li{
-        list-style-type:none;
-        height:35px;
-        width:100%;
-        line-height:35px;
-        border-bottom:#DFDFDF 1px solid;
-        color:#939393;
-        display:block;
-    }
-    #livesearch li:hover {
-        color:#ff5c57;
+        list-style-type: none;
     }
 
+    #livesearch li {
+        list-style-type: none;
+        height: 35px;
+        width: 100%;
+        line-height: 35px;
+        border-bottom: #DFDFDF 1px solid;
+        color: #939393;
+        display: block;
+    }
+
+    #livesearch li:hover {
+        color: #ff5c57;
+    }
+
+    .command_log {
+        max-height: 500px;
+        overflow-y: scroll;
+    }
 </style>
 
 <h1>添加分组</h1>
@@ -27,59 +33,51 @@
 </div>
 <div class="panel-body">
     <div class="col-md-10 col-md-offset-1">
-
-
-            <div class="form-group">
-                    <div class="container">
-                        <div class="col-sm-4">
-                            <label>主机组</label><input class="form-control" name='group' id='group'  placeholder="组名必须是英文" onkeyup="showResult(this.value)">
-                            <ul id='livesearch'>
-
-                            </ul>
-                        </div>
-
-                        <div class="col-sm-4">
-                            <label>主机</label>
-                            <input class="form-control" name='host' id='host'  placeholder="请输入主机名" onkeyup="showHostResult(this.value)">
-                            <ul id='host_search'>
-
-                            </ul>
-                        </div>
-
-                    </div>
-                    <div class="container">
-                            <div class="col-md-4">
-                                <label>IP</label>
-                                <input class="form-control" name='ip' id='ip'  placeholder="请输入主机名" onkeyup="showIPResult(this.value)">
-                                <ul id='ip_search'>
-
-                                </ul>
-                            </div>
-                            <div class="col-sm-4">
-                                <label>模块</label>
-                                <input class="form-control" name='module' id='module'  placeholder="请输入ansible模块" value="command">
-                            </div>
-                    </div>
-                    <div class="container">
-                        <div class="col-sm-8">
-                            <label>命令</label>
-                            <input class="form-control" name='command' id='command' required placeholder="组名必须是英文" >
-                        </div>
-                    </div>
-                <input type="hidden" name="__token__" value="{:token()}" />
+        <div class="form-group">
+            <div class="container">
+                <div class="col-sm-4">
+                    <label>主机组</label>
+                    <input class="form-control" name='group' id='group' placeholder="组名必须是英文"
+                           onkeyup="showResult(this.value)">
+                    <ul id='livesearch'></ul>
+                </div>
+                <div class="col-sm-4">
+                    <label>主机</label>
+                    <input class="form-control" name='host' id='host' placeholder="请输入主机名"
+                           onkeyup="showHostResult(this.value)">
+                    <ul id='host_search'></ul>
+                </div>
             </div>
-            <div class="text-center">
-                <button class='btn btn-primary' type="submit" onclick="javascript:return execute_command();">执行</button>
+            <div class="container">
+                <div class="col-md-4">
+                    <label>IP</label>
+                    <input class="form-control" name='ip' id='ip' placeholder="请输入主机名"
+                           onkeyup="showIPResult(this.value)">
+                    <ul id='ip_search'></ul>
+                </div>
+                <div class="col-sm-4">
+                    <label>模块</label>
+                    <input class="form-control" name='module' id='module' placeholder="请输入ansible模块" value="command">
+                </div>
             </div>
+            <div class="container">
+                <div class="col-sm-8">
+                    <label>命令</label>
+                    <input class="form-control" name='command' id='command' required placeholder="组名必须是英文">
+                </div>
+            </div>
+            <input type="hidden" name="__token__" value="{:token()}"/>
+        </div>
+        <div class="text-center">
+            <button class='btn btn-primary' type="submit" onclick="javascript:return execute_command();">执行</button>
+        </div>
     </div>
     <div class="col-md-10 col-md-offset-1">
         <h4>执行日志</h4>
         <hr>
         <input type="hidden" name="logfile" id="logfile">
         <input type="hidden" name="line" id="line">
-        <div class="command_log" id="command_log" name="command_log">
-
-        </div>
+        <div class="command_log" id="command_log" name="command_log"></div>
     </div>
 
 </div>
@@ -91,88 +89,90 @@
             continue;
         }
     }
-
+    var timer = '' // 定时器
     function execute_command() {
+        clearInterval(timer)
         var group = $("#group").val();
         var host = $("#host").val();
         var ip = $("#ip").val();
-        var  module = $("#module").val();
+        var module = $("#module").val();
         var command = $("#command").val();
-        if(!command) {
+        if (!command) {
             alert('命令不能为空');
+            return
         }
-        if(!(group||host||ip)){
+        if (!(group || host || ip)) {
             alert('主机组与主机必须填写一个');
-
-        }
-        else {
+        } else {
             console.log(group, host, command);
-            $.post("/ansible_command/command",
-                {
-                    'group': group,
-                    'host': host,
-                    'ip': ip,
-                    'module': module,
-                    'command': command,
-                },
-                function(result,status){
-                    // alert("数据: \n" + data + "\n状态: " + status);
-
-                    var obj=JSON.parse(result);
-                    // console.log(obj['logfile']);
-                    document.getElementById('logfile').value=obj['logfile'];
-
-                });
+            $.post("/ansible_command/command", {
+                'group': group,
+                'host': host,
+                'ip': ip,
+                'module': module,
+                'command': command,
+            }, function (result, status) {
+                // alert("数据: \n" + data + "\n状态: " + status);
+                var obj = JSON.parse(result);
+                // console.log(obj['logfile']);
+                document.getElementById('logfile').value = obj['logfile'];
+                document.getElementById('line').value = 0;
+                document.getElementById('command_log').innerHTML = '';
+                getLog()
+            });
         }
     }
-
-    //设定定时器，使有日志之后定时读取日志到页面
-    setInterval(  function get_log()
-    {
-        console.log('2111111111111111111');
-        var d=new Date();
-        var t=d.toLocaleTimeString();
-        document.getElementById("command_log").innerHTML=t;
-        var logfile = document.getElementById('logfile').value;
-        var line = document.getElementById('line').value;
-        //判断是否产生日志文件
-        if (logfile&&line){
-            $.get('/ansible_command/get_log',{
-                'logfile': logfile,
-                'line': line
-            }, function (data, status) {
-                    var data=JSON.parse(data);
-                    console.log(data);
-                var div = document.getElementById('command_log');
-                div.insertAdjacentHTML('afterend', data['log']);
-                document.getElementById('line').value=data['line'];
-                window.scrollTo(0, document.documentElement.clientHeight);
-
+    function getLog() {
+        //设定定时器，使有日志之后定时读取日志到页面
+        timer = setInterval(function get_log() {
+            var logfile = document.getElementById('logfile').value;
+            var line = document.getElementById('line').value;
+            // var command_log = document.getElementById('command_log');
+            //判断是否产生日志文件
+            if (logfile && line) {
+                $.get('/ansible_command/get_log', {
+                        'logfile': logfile,
+                        'line': line
+                    }, function (data, status) {
+                        var data = JSON.parse(data);
+                        var log = data['log'];
+                        console.log(log);
+                        if (log) {
+                            for (i = 0; i < log.length; i++) {
+                                var p = document.createElement("p");
+                                p.innerHTML = log[i];
+                                $('#command_log').append(p)
+                                // var command_log = document.getElementById('command_log');
+                                // command_log.innerHTML = p;
+                            }
+                            document.getElementById('line').value = data['line'];
+                            // window.scrollTo(0, document.documentElement.clientHeight);
+                            $('#command_log')[0].scrollTop = $('#command_log')[0].scrollHeight;
+                        }
+                    }
+                )
+            } else if (logfile && (!line)) {
+                console.log('0000000000000')
+                $.get('/ansible_command/get_log', {
+                    'logfile': logfile,
+                    'line': 0
+                }, function (data, status) {
+                    var data = JSON.parse(data);
+                    // // var p = document.createElement('p');
+                    //     var div = document.getElementById('command_log');
+                    //     div.insertAdjacentHTML('afterend', data['log']);
+                    var log = data['log'];
+                    for (i = 0; i < log.length; i++) {
+                        var p = document.createElement("p");
+                        p.innerHTML = log[i];
+                        document.getElementById('command_log').appendChild(p);
+                    }
+                    document.getElementById('line').value = data['line'];
+                    window.scrollTo(0, document.documentElement.clientHeight);
+                })
             }
-            )}else if(logfile&&(!line)){
-            $.get('/ansible_command/get_log',{
-                'logfile': logfile,
-                'line': 0
-            }, function (data, status) {
-                var data=JSON.parse(data);
-                console.log(data);
-                // var p = document.createElement('p');
-                var div = document.getElementById('command_log');
-                div.insertAdjacentHTML('afterend', data['log']);
-                document.getElementById('line').value=data['line'];
-                window.scrollTo(0, document.documentElement.clientHeight);
-
-            })
-        }else {
-
-        }
-        console.log(logfile)
-
-    }, 5000)
-
-
-
-
+        }, 5000)
+    }
 </script>
 <script src="/static/ansible/command.js"></script>
 {/block}

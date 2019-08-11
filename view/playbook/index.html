@@ -1,0 +1,59 @@
+{extend name='base' /}
+
+{block name='content'}
+<h1>分组管理</h1>
+<hr>
+<div class="panel panel-primary">
+    <div class="panel panel-heading">
+        <div class="text-right">
+            <a href="{:url('playbook/create')}"><button class="btn btn-default">添加剧本</button></a>
+
+        </div>
+    </div>
+    <div class="panel panel-body">
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>名称</th>
+                    <th>创建时间</th>
+                    <th>标签</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {volist name="data" id="vo"}
+                <tr>
+                    <td> {$vo.id}</td>
+                    <td>{$vo.name}</td>
+                    <td>{$vo.create_at}</td>
+                    <td>{$vo.tag}</td>
+                    <td>
+                        <a href="{:url('playbook/edit')}?id={$vo.id}"><button class="btn btn-primary btn-xs">编辑</button></a>
+                        <a href="{:url('playbook/delete')}?id={$vo.id}"><button class="btn btn-danger btn-xs" onclick="javascript:return del();">删除</button></a>
+                    </td>
+                </tr>
+                {/volist}
+
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="panel panel-footer text-center">
+        {$data|raw}
+    </div>
+</div>
+
+<script>
+    function del() {
+        var msg = "您真的确定要删除吗？\n\n请确认！";
+        if (confirm(msg)==true){
+            return true;
+        }else{
+            return false;
+        }
+    }
+</script>
+{/block}

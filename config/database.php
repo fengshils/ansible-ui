@@ -36,9 +36,9 @@ return [
             // 数据库名
             'database'          => Env::get('database.database', 'ansible'),
             // 用户名
-            'username'          => Env::get('database.username', 'root'),
+            'username'          => Env::get('database.username', 'ansible'),
             // 密码
-            'password'          => Env::get('database.password', ''),
+            'password'          => Env::get('database.password', '123456'),
             // 端口
             'hostport'          => Env::get('database.hostport', '3306'),
             // 数据库连接参数

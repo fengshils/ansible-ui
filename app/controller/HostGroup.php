@@ -12,6 +12,7 @@ use think\exception\ValidateException;
 
 class HostGroup extends BaseController
 {
+    protected $middleware = ['app\middleware\CheckLogin'];
     /**
      * 显示资源列表
      *

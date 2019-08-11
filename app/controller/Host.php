@@ -2,6 +2,7 @@
 
 namespace app\controller;
 
+use app\middleware\CheckLogin;
 use think\facade\Db;
 use think\facade\View;
 use app\BaseController;
@@ -9,8 +10,11 @@ use app\model\Host as HostModel;
 use app\validate\Host as HostValidate;
 use think\exception\ValidateException;
 
+
 class Host extends BaseController
 {
+
+    protected $middleware = ['app\middleware\CheckLogin'];
     /**
      * 显示资源列表
      *

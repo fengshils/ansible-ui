@@ -12,5 +12,5 @@ ansible 命令执行 完成
 playbook 管理器 未完成
 playbook 执行  未完成
 
-
+cesgu
 php think make:validate HostGroup  创建验证器

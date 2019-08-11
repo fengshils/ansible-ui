@@ -2,15 +2,14 @@
 
 namespace app\controller;
 
-use function MongoDB\BSON\toJSON;
-use think\facade\Db;
-use think\Log;
-use think\Request;
+use app\BaseController;
 use \think\facade\View;
 use \app\common\Sclient;
 
-class AnsibleCommand
+class AnsibleCommand extends  BaseController
 {
+
+    protected $middleware = ['app\middleware\CheckLogin'];
     /**
      * 显示资源列表
      *
@@ -65,22 +64,32 @@ class AnsibleCommand
         $logfile = input('get.')['logfile'];
         $line = input('get.')['line'];
         if ($line != 0){
-            $file = fopen("$logfile", "r");
+//            $file = SplFileInfo("$logfile", "r");
             $log=[];
             $i=0;
-            fseek($file,$line, SEEK_END);
+//            fseek($file,$line,SEEK_END);
+            $ret = "";
+            for( $i = $line ; $i < count(file($logfile)) ; $i++ )
+            {
+                $log[$i]= getLine($logfile, $i);//fgets()函数从文件指针中读取一行
+                $i++;
+            }
+
+
+
 
             //输出文本中所有的行，直到文件结束为止。
-            while(! feof($file))
-            {
-                trace('开始', 'log');
-                $log[$i]= fgets($file).'<br>';//fgets()函数从文件指针中读取一行
-                $i++;
-                trace($log,'log');
-            }
-            fclose($file);
+//            while(! feof($file))
+//            {
+//                trace('开始', 'log');
+//                $log[$i]= fgets($file).'<br>';//fgets()函数从文件指针中读取一行
+//                $i++;
+//                trace($log,'log');
+//            }
+//            fclose($file);
+            trace($ret, 'log');
             return json_encode( array(
-                'log' => $log,
+                'log' => $ret,
                 'line' => count(file($logfile)),
             ));
         }else{
@@ -91,7 +100,7 @@ class AnsibleCommand
             //输出文本中所有的行，直到文件结束为止。
             while(! feof($file))
             {
-                $log[$i]= fgets($file).'<br>';//fgets()函数从文件指针中读取一行
+                $log[$i]= fgets($file);//fgets()函数从文件指针中读取一行
                 $i++;
             }
             fclose($file);
